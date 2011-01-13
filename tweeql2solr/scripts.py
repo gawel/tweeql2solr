@@ -49,7 +49,7 @@ def main():
         table=options.where and 'twitter' or 'twitter_sample'
     )
     query = '''select url(text) as id, screen_name, text, created_at,
-       entities('hastags') as cat, entities('user_mentions') as user_mentions,
+       entities('hashtags') as cat, entities('user_mentions') as user_mentions,
        tweetLatLng("lat") as latitude, tweetLatLng("lng") as longitude
        from %(table)s
        %(where)s;''' % params

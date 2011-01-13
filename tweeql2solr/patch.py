@@ -4,6 +4,7 @@ import pysolr
 import config
 
 ALIASES = dict(
+        text='title',
         created_at='created_dt',
         screen_name='author',
     )
@@ -22,11 +23,16 @@ class SolrStatusHandler(status_handlers.StatusHandler):
         dicts = [dict(status.as_iterable_visible_pairs()) for status in statuses]
         cleaned_dicts = []
         for old in dicts:
+            if 'cat' not in old:
+                raise ValueError(old)
             d = dict([(ALIASES.get(k, k), v) for k, v in old.items() if v])
+            cat = []
             if 'cat' in d:
-                cd['cat'] = d['cat'].split()
+                cat.extend(d['cat'].split(','))
             if 'user_mentions' in d:
-                d['user_mentions'] = d['user_mentions'].split()
+                cat.extend(d['user_mentions'].split(','))
+            if cat:
+                d['cat'] = list(set([c.lower() for c in cat]))
             if 'latitude' in d:
                 d['store'] = '%(latitude)s,%(longitude)s' % d
                 del d['latitude']

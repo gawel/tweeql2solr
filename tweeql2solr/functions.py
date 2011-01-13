@@ -27,11 +27,11 @@ class Entities():
 
     def get_entities(self, tuple_data, val):
         values = tuple_data['entities']
-        value = values.get(val, [])
-        if val == 'hastags':
-            return ','.join([v['text'] for v in value])
+        value = values[val]
+        if val == 'hashtags':
+            return ','.join(list(set([v['text'].lower() for v in value])))
         elif val == 'user_mentions':
-            return ','.join([u'%(name)s @%(screen_name)s' % v for v in value])
+            return ','.join([v['screen_name'] for v in value])
 
 fr = FunctionRegistry()
 fr.register("entities", FunctionInformation(Entities.factory, Entities.return_type))
