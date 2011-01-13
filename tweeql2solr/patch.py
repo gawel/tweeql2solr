@@ -1,17 +1,22 @@
 # -*- coding: utf-8 -*-
 from tweeql import status_handlers
 import pysolr
+import config
 
 ALIASES = dict(
         created_at='created_dt',
         screen_name='author',
     )
 
+INVALID_KEYS = ('user_mentions',)
+if config.SOLR1:
+    INVALID_KEYS += ('store',)
+
 class SolrStatusHandler(status_handlers.StatusHandler):
     def __init__(self, batch_size, delimiter = u"|"):
-        super(SolrStatusHandler, self).__init__(batch_size)
+        super(SolrStatusHandler, self).__init__(config.BATCH_SIZE)
         self.delimiter = delimiter
-        self.conn = pysolr.Solr('http://127.0.0.1:8983/solr/')
+        self.conn = pysolr.Solr(config.SOLR_URL)
 
     def handle_statuses(self, statuses):
         dicts = [dict(status.as_iterable_visible_pairs()) for status in statuses]
@@ -26,17 +31,18 @@ class SolrStatusHandler(status_handlers.StatusHandler):
                 d['store'] = '%(latitude)s,%(longitude)s' % d
                 del d['latitude']
                 del d['longitude']
-            for k in ('user_mentions',):
+            for k in INVALID_KEYS:
                 if k in d:
                     del d[k]
             cleaned_dicts.append(d)
-        print cleaned_dicts
+        if config.DEBUG:
+            print cleaned_dicts
         try:
             self.conn.add(cleaned_dicts)
         except AttributeError, e:
             # pysolr fail to scrap an error
             # don't care about failures. it's only tweets..
-            print e
-            pass
+            if config.DEBUG:
+                print e
 
 status_handlers.PrintStatusHandler = SolrStatusHandler
