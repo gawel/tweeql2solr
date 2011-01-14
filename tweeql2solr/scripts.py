@@ -16,7 +16,7 @@ parser.add_option("--password", dest="password",
                   help="twitter password")
 parser.add_option("-s", "--batch-size", dest="batch_size",
                   action="store", default='1',
-                  help="batch size. Default: 1")
+                  help="Number of tweets to proceed before indexing. Default: 1")
 parser.add_option("-u", "--url", dest="url",
                   action="store", default='http://127.0.0.1:8983/solr/',
                   help="solr url. Default: http://127.0.0.1:8983/solr/")
