@@ -2,6 +2,7 @@
 from tweeql import status_handlers
 import pysolr
 import config
+import utils
 
 ALIASES = dict(
         text='title',
@@ -40,15 +41,21 @@ class SolrStatusHandler(status_handlers.StatusHandler):
             for k in INVALID_KEYS:
                 if k in d:
                     del d[k]
+            if config.DETECT_LANGUAGE:
+                lang = utils.guess_language(d['title'])
+                if lang:
+                    d['lang'] = lang
             cleaned_dicts.append(d)
-        if config.DEBUG:
-            print cleaned_dicts
-        try:
-            self.conn.add(cleaned_dicts)
-        except AttributeError, e:
-            # pysolr fail to scrap an error
-            # don't care about failures. it's only tweets..
+
+        if cleaned_dicts:
             if config.DEBUG:
-                print e
+                print cleaned_dicts
+            try:
+                self.conn.add(cleaned_dicts)
+            except AttributeError, e:
+                # pysolr fail to scrap an error
+                # don't care about failures. it's only tweets..
+                if config.DEBUG:
+                    print e
 
 status_handlers.PrintStatusHandler = SolrStatusHandler

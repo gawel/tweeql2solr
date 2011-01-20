@@ -31,6 +31,9 @@ tweeql2solr provide a simple command line script::
     -1, --solr1           use this if you do not use solr 4.
     -v, --verbose         increase verbosity
     
+You need to add this line if you planned to use the ``-l`` option::
+
+   <field name="lang" type="string" indexed="true" stored="true"/>
 
 .. _tweeql: https://github.com/marcua/tweeql 
 

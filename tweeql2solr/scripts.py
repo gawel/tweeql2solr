@@ -14,6 +14,9 @@ parser.add_option("--username", dest="username",
 parser.add_option("--password", dest="password",
                   action="store", default=os.environ.get('TWITTER_PASSWORD', ''),
                   help="twitter password")
+parser.add_option("-l", "--language", dest="language",
+                  action="store_true", default=False,
+                  help="Detect tweet language")
 parser.add_option("-s", "--batch-size", dest="batch_size",
                   action="store", default='1',
                   help="Number of tweets to proceed before indexing. Default: 1")
@@ -33,6 +36,7 @@ config.DEBUG = options.verbose
 config.BATCH_SIZE = int(options.batch_size)
 config.SOLR_URL = options.url
 config.SOLR1 = int(options.version)
+config.DETECT_LANGUAGE = options.language
 config.TWITTER_USERNAME = options.username
 config.TWITTER_PASSWORD = options.password or os.environ.get('TWITTER_PASSWORD')
 
@@ -43,6 +47,11 @@ def main():
     import functions
     from tweeql.exceptions import TweeQLException
     from tweeql.query_runner import QueryRunner
+
+
+    if not options.where:
+        parser.parse_args(['-h'])
+
     runner = QueryRunner()
     params = dict(
         where=options.where and 'WHERE %s' % options.where or '',
