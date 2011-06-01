@@ -13,7 +13,7 @@ class Url():
 
     def get_url(self, tuple_data, val):
         tuple_data['screen_name'] = tuple_data['author'].screen_name
-        return 'http://twitter.com/%(screen_name)s/%(id)s' % tuple_data
+        return 'http://twitter.com/%(screen_name)s/status/%(id)s' % tuple_data
 
 fr = FunctionRegistry()
 fr.register("url", FunctionInformation(Url.factory, Url.return_type))
