@@ -45,6 +45,7 @@ class SolrStatusHandler(status_handlers.StatusHandler):
                 lang = utils.guess_language(d['title'])
                 if lang:
                     d['lang'] = lang
+            d['category'] = 'twitter'
             cleaned_dicts.append(d)
 
         if cleaned_dicts:
