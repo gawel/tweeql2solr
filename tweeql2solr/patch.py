@@ -3,6 +3,7 @@ from tweeql import status_handlers
 import pysolr
 import config
 import utils
+import sys
 
 ALIASES = dict(
         text='title',
@@ -49,7 +50,7 @@ class SolrStatusHandler(status_handlers.StatusHandler):
 
         if cleaned_dicts:
             if config.DEBUG:
-                print cleaned_dicts
+                print >> sys.stderr, cleaned_dicts
             try:
                 self.conn.add(cleaned_dicts)
             except AttributeError, e:
