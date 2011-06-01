@@ -63,6 +63,6 @@ def main():
        from %(table)s
        %(where)s;''' % params
     if config.DEBUG:
-        print '      ', query
+        print >> sys.stderr, '      ', query
     runner.run_query(query, False)
 
